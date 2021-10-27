@@ -1,0 +1,39 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eks-app-suengineer
+  namespace: eks-app-suengineer
+  labels:
+    app: eks-app-suengineer
+  annotations:
+    # Container Image Automated Updates
+    flux.weave.works/automated: "true"
+    # do not apply this manifest on the cluster
+    #flux.weave.works/ignore: "true"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: eks-app-suengineer
+  template:
+    metadata:
+      labels:
+        app: eks-app-suengineer
+    spec:
+      containers:
+      - name: eks-app-suengineer
+        image: 429178776329.dkr.ecr.ap-northeast-2.amazonaws.com/eks-app-suengineer:4b151f93
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80
+          name: http
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+        readinessProbe:
+          httpGet:
+            path: /
+            port: http
